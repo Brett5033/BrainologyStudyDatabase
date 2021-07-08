@@ -29,6 +29,12 @@ namespace BrainologyStudyDatabase
         Location
     }
 
+    public enum SegmentTabSelection
+    {
+        Segments,
+        AddSegment
+    }
+
     public partial class HomeScreen : MetroFramework.Forms.MetroForm
     {
         public DatabaseHandler db;
@@ -172,7 +178,7 @@ namespace BrainologyStudyDatabase
         /// <summary>
         /// Populate (fill CBX) the Study select with all studies
         /// </summary>
-        private void H_S_PopulateStudy()
+        private void H_S_PopulateStudy(int selectedIndexOverride = 0)
         {
             Console.WriteLine("Loading Study Tab");
             // Populate Study column
@@ -188,7 +194,7 @@ namespace BrainologyStudyDatabase
             if (result.Rows.Count > 0)
             {
                 // Trigger changed Event
-                H_S_CBXStudySelect.SelectedIndex = 0;
+                H_S_CBXStudySelect.SelectedIndex = selectedIndexOverride;
 
             }
         }
@@ -200,14 +206,34 @@ namespace BrainologyStudyDatabase
         /// <param name="e"></param>
         private void H_S_CBXStudySelect_SelectedIndexChanged(object sender, EventArgs e)
         {
-            DataRow selectedRow = ((DataView)H_S_CBXStudySelect.DataSource).Table.Rows[H_S_CBXStudySelect.SelectedIndex];
+            DataRow selectedStudy = ((DataView)H_S_CBXStudySelect.DataSource).Table.Rows[H_S_CBXStudySelect.SelectedIndex];
+            SelectedStudyID = (int)selectedStudy.ItemArray[0];
+            selectedStudyIndex = H_S_CBXStudySelect.SelectedIndex;
+
+            CreatingNewStudy = false;
 
             // Display the study
-            H_S_displayStudy(selectedRow);
+            H_S_displayStudy(selectedStudy);
 
             // Populate Versions (gets the study id from the selected data row)
-            H_S_populateStudyVersions((int)(selectedRow.ItemArray[0]));
+            H_S_populateStudyVersions((int)(selectedStudy.ItemArray[0]));
         }
+
+        /// <summary>
+        /// Holds the STUDY_ID of the currently displayed study
+        /// </summary>
+        private int SelectedStudyID;
+
+        /// <summary>
+        /// The Index within the cbx study select, used to restore the proper display
+        /// </summary>
+        private int selectedStudyIndex;
+
+        /// <summary>
+        /// Determines if a new study should be created when the save study button is pressed
+        /// Will be turned off when a different study is selected
+        /// </summary>
+        private bool CreatingNewStudy = false;
 
         /// <summary>
         /// Takes a datarow of the study table and displays its data
@@ -232,10 +258,72 @@ namespace BrainologyStudyDatabase
         }
 
         /// <summary>
+        /// Saves or updates study data of the currently displayed study
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void S_H_BTNSaveStudy_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+                string sqlCommand;
+                if (!CreatingNewStudy)
+                    sqlCommand = "UPDATE STUDY SET NAME = @ColNAME, TYPE = @ColTYPE, START_DATE = @ColSTART_DATE, END_DATE = @ColEND_DATE WHERE STUDY_ID = " + SelectedStudyID;
+                else
+                    sqlCommand = "INSERT INTO STUDY (NAME, TYPE, START_DATE, END_DATE) VALUES (@ColNAME, @ColTYPE, @ColSTART_DATE, @ColEND_DATE)";
+
+                // TODO: 
+                // Needs parameterizied query with data values pulled from the text boxes
+
+                if (H_S_TXTStudyName.Text == "" || H_S_CBXStudyType.SelectedIndex < 0)
+                {
+                    MessageBox.Show("Please fill all required fields before saving");
+                    return;
+                }
+                // Build Parameter list to send to query
+                SqlParameter[] parameters = new SqlParameter[4];
+                
+                parameters[0] = new SqlParameter("@ColNAME", H_S_TXTStudyName.Text);
+
+                int typeSelection = H_S_CBXStudyType.SelectedIndex + 1; // Shift up to match format
+                parameters[1] = new SqlParameter("@ColTYPE", typeSelection);
+                parameters[2] = new SqlParameter("@ColSTART_DATE", H_S_DTPStart_Date.Value);
+                parameters[3] = new SqlParameter("@ColEND_DATE", H_S_DTPEnd_Date.Value);
+
+                Console.WriteLine("Save Study Parameters Initializied, execute command");
+                db.executeCommand(sqlCommand, parameters);
+                Console.WriteLine("Study Saved");
+                MessageBox.Show("Study Saved");
+                H_S_PopulateStudy(selectedStudyIndex);
+
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Error occured when saving study data:\n" + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Create a new study and clear the study display/input
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void S_H_BTNNewStudy_Click(object sender, EventArgs e)
+        {
+            CreatingNewStudy = true;
+            H_S_TXTStudyName.Text = "";
+            H_S_CBXStudyType.SelectedIndex = 0;
+            H_S_DTPStart_Date.Value = DateTime.Now;
+            H_S_DTPEnd_Date.Value = DateTime.Now;
+            H_S_CBXVersionSelect.Enabled = false;
+        }
+
+        /// <summary>
         /// Populate (Fill CBX) the study versions for the given study
         /// </summary>
         /// <param name="studyID"></param>
-        private void H_S_populateStudyVersions(int studyID)
+        private void H_S_populateStudyVersions(int studyID, int selectedIndexOverride = 0)
         {
             string query = string.Format("SELECT VERSION_ID, STUDY_ID, VERSION_NUM, DESCRIPTION FROM STUDY_VERSION WHERE STUDY_ID = {0}", studyID);
             DataTable result = db.compileQuery(query);
@@ -243,21 +331,23 @@ namespace BrainologyStudyDatabase
             if(result.Rows.Count > 0)
             {
                 H_S_CBXVersionSelect.Enabled = true;
+                H_S_TCSegments.Enabled = true;
                 H_S_CBXVersionSelect.DataSource = result;
                 H_S_CBXVersionSelect.ValueMember = "VERSION_ID";
                 H_S_CBXVersionSelect.DisplayMember = "DESCRIPTION";
 
                 // Select Index 0
-                H_S_CBXVersionSelect.SelectedIndex = 0;
+                H_S_CBXVersionSelect.SelectedIndex = selectedIndexOverride;
                 H_S_CBXVersionSelect_SelectedIndexChanged(null, null);
 
             }
             else
-            {
+            {   // TODO: This is being called on a study that has 1 study version
                 // No versions for the current study, disable cbx and clear segments
                 H_S_CBXVersionSelect.Enabled = false;
                 H_S_TXTVersionName.Text = "None";
-                H_S_CBXVersionSelect.Items.Clear();
+                H_S_TCSegments.Enabled = false;
+                //H_S_CBXVersionSelect.Items.Clear();
                 H_S_displaySegments(-1);
             }
         }
@@ -271,6 +361,10 @@ namespace BrainologyStudyDatabase
         {
             // Selected row
             DataRow selectedRow = ((DataTable)H_S_CBXVersionSelect.DataSource).Rows[H_S_CBXVersionSelect.SelectedIndex];
+            selectedVersionID = (int)selectedRow.ItemArray[0];
+            selectedVersionIndex = H_S_CBXVersionSelect.SelectedIndex;
+
+            creatingNewVersion = false;
 
             // Display new version
             H_S_displayVersion(selectedRow);
@@ -296,6 +390,64 @@ namespace BrainologyStudyDatabase
         }
 
         /// <summary>
+        /// The VERSION_ID of the currently selected study version
+        /// </summary>
+        private int selectedVersionID;
+
+        /// <summary>
+        /// The Index within the cbx version select, used to restore the proper display
+        /// </summary>
+        private int selectedVersionIndex;
+
+        private bool creatingNewVersion = false;
+
+        private void H_SBTNSaveVersion_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string sqlCommand;
+                if (!creatingNewVersion)
+                    sqlCommand = "UPDATE STUDY_VERSION SET STUDY_ID = @ColSTUDY_ID, VERSION_NUM = @ColVERSION_NUM, DESCRIPTION = @ColDESCRIPTION WHERE VERSION_ID = " + selectedVersionID;
+                else
+                    sqlCommand = "INSERT INTO STUDY_VERSION (STUDY_ID, VERSION_NUM, DESCRIPTION) VALUES (@ColSTUDY_ID, @ColVERSION_NUM, @ColDESCRIPTION)";
+
+                // TODO: 
+                // Needs parameterizied query with data values pulled from the text boxes
+
+                if (H_S_TXTVersionName.Text == "" || H_S_TXTVersionNumber.Text == "")
+                {
+                    MessageBox.Show("Please fill all required fields before saving");
+                    return;
+                }
+                // Build Parameter list to send to query
+                SqlParameter[] parameters = new SqlParameter[3];
+
+                parameters[0] = new SqlParameter("@ColSTUDY_ID", SelectedStudyID);
+                parameters[1] = new SqlParameter("@ColVERSION_NUM", H_S_TXTVersionNumber.Text);
+                parameters[2] = new SqlParameter("@ColDESCRIPTION", H_S_TXTVersionName.Text);
+
+                Console.WriteLine("Save Version Parameters Initializied, execute command");
+                db.executeCommand(sqlCommand, parameters);
+                Console.WriteLine("Version Saved");
+                MessageBox.Show("Version Saved");
+                H_S_populateStudyVersions(SelectedStudyID, selectedVersionIndex);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error occured when saving version data:\n" + ex.Message);
+            }
+        }
+
+        private void H_SBTNNewVersion_Click(object sender, EventArgs e)
+        {
+            creatingNewVersion = true;
+            H_S_TXTVersionName.Text = "";
+            H_S_TXTVersionNumber.Text = "";
+        }
+
+
+        /// <summary>
         /// Populate the segments datagrid with all segments that are in the selected version
         /// </summary>
         /// <param name="versionID"></param>
@@ -308,12 +460,68 @@ namespace BrainologyStudyDatabase
             //{
                 H_S_S_SegmentView.DataSource = result;
 
-
                 // Remove ID columns hopfully
                 // TODO: Might not work
                 H_S_S_SegmentView.Columns.RemoveAt(0);
                 H_S_S_SegmentView.Columns.RemoveAt(0);
             //}
+
+            DisplayVersionsForSegments();
+        }
+
+        private void DisplayVersionsForSegments()
+        {
+            DataTable versions = (DataTable)H_S_CBXVersionSelect.DataSource;
+            H_S_ASCLBStudyVersion.Items.Clear();
+
+            foreach (DataRow row in versions.Rows)
+                H_S_ASCLBStudyVersion.Items.Add(row.ItemArray[0].ToString() + ": " + row.ItemArray[3].ToString());
+
+        }
+
+        private void H_S_ASBTNAddSegment_Click(object sender, EventArgs e)
+        {
+            if(H_S_ASLBLSegmentName.Text == "")
+            {
+                MessageBox.Show("Please fill the segment name field");
+                return;
+            }
+            if(H_S_ASCLBStudyVersion.CheckedItems.Count <= 0)
+            {
+                MessageBox.Show("Please select at least 1 version to assign the segment too");
+                return;
+            }
+
+            string segmentName = H_S_ASTXTSegmentName.Text;
+            string segmentSource = H_S_ASTXTSegmentSource.Text;
+            string dur = H_S_ASMTXTSegmentDuration.Text;
+            DateTime duration;
+            if(!DateTime.TryParse(dur, out duration))
+            {
+                duration = DateTime.Parse("00:00");
+            }
+
+            string sqlCommand = "INSERT INTO SEGMENT (VERSION_ID, NAME, DURATION, SOURCE) VALUES (@versID, @segName, @segDuration, @segSource)";
+
+            // Iterate through each 
+            for (int v = 0; v < H_S_ASCLBStudyVersion.CheckedItems.Count; v++)
+            {
+                // Gets the VERSION_ID of the version checked
+                // "1: Adult" -> int 1
+                int checkedVersionID;
+                string version = H_S_ASCLBStudyVersion.CheckedItems[v].ToString();
+                int.TryParse(version.Substring(0, version.IndexOf(":")), out checkedVersionID);
+
+                SqlParameter[] parameters = new SqlParameter[4];
+                parameters[0] = new SqlParameter("@versID", checkedVersionID);
+                parameters[1] = new SqlParameter("@segName", segmentName);
+                parameters[2] = new SqlParameter("@segDuration", duration);
+                parameters[3] = new SqlParameter("@segSource", segmentSource);
+
+                db.executeCommand(sqlCommand, parameters);
+            }
+
+            H_S_populateStudyVersions(selectedVersionID);
         }
 
         #endregion
@@ -322,8 +530,60 @@ namespace BrainologyStudyDatabase
 
         private void LoadParticipants()
         {
+            string query = "SELECT PARTICIPANT_ID, FIRST_NAME, LAST_NAME, AGE FROM PARTICIPANT";
+            DataTable result = db.compileQuery(query);
 
+            result.Columns.Add("displayCol", typeof(string), "FIRST_NAME + ' ' + LAST_NAME + ' : ' + AGE");
+
+            H_P_CBXSelectParticipant.DataSource = result;
+            H_P_CBXSelectParticipant.ValueMember = "PARTICIPANT_ID";
+            H_P_CBXSelectParticipant.DisplayMember = "displayCol";
+            
         }
+
+        private List<object> fieldControls = new List<object>();
+
+        private void H_P_CBXSelectParticipant_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Query for the data row of the chosen participant
+
+            string query = "SELECT * FROM PARTICIPANT WHERE PARTICIPANT_ID = @parPARTICIPANT_ID";
+            SqlParameter[] parameters = new SqlParameter[] {
+            new SqlParameter("@parPARTICIPANT_ID", ((DataTable)H_P_CBXSelectParticipant.DataSource).Rows[H_P_CBXSelectParticipant.SelectedIndex].ItemArray[0])};
+
+            DataTable result = db.compileQuery(query, parameters);
+            Console.WriteLine("Participant row count: " + result.Rows.Count);
+            if (result.Rows.Count <= 0)
+                return;
+
+            //H_P_DGVFields.DataSource = result;
+            DataRow choosenParticipant = result.Rows[0];
+
+            // Clear field control list
+            fieldControls.Clear();
+            H_P_FLPFields.Controls.Clear();
+
+            // Loop through all fields, creating a label and a corresponding data entry control (Text, CBX, or Date Picker)
+            for(int i = 0; i < choosenParticipant.ItemArray.Length; i++)
+            {
+                string fieldLabel = result.Columns[i].ColumnName;
+                MetroFramework.Controls.MetroLabel fieldLabelControl = new MetroFramework.Controls.MetroLabel();
+                fieldLabelControl.Text = fieldLabel;
+                //H_P_FLPFields.Controls.Add(fieldLabelControl);
+
+                // Check if the field is a special field (cbx or date)
+                string data = choosenParticipant.ItemArray[i].ToString();
+
+                TextBoxControl tbx = new TextBoxControl();
+                tbx.id = i;
+                tbx.lbl.Text = fieldLabel;
+                tbx.txt.Text = data;
+
+                fieldControls.Add(tbx);
+                H_P_FLPFields.Controls.Add(tbx);
+            }
+        }
+
 
         #endregion
 
@@ -939,13 +1199,6 @@ namespace BrainologyStudyDatabase
             }
             Console.Write("\n");
         }
-
-
-
-
-
-
-
 
 
 

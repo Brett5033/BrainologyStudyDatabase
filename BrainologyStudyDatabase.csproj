@@ -76,6 +76,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BrainologyStudyDataSet.xsd</DependentUpon>
     </Compile>
+    <Compile Include="TextBoxControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TextBoxControl.Designer.cs">
+      <DependentUpon>TextBoxControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="PromptHandler.cs" />
     <Compile Include="DatabaseHandler.cs" />
     <Compile Include="DatabaseEnums.cs" />
@@ -100,6 +106,9 @@
     <Compile Include="ComboBoxControl.Designer.cs">
       <DependentUpon>ComboBoxControl.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="TextBoxControl.resx">
+      <DependentUpon>TextBoxControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PasteForm.resx">
       <DependentUpon>PasteForm.cs</DependentUpon>
     </EmbeddedResource>

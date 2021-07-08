@@ -43,7 +43,7 @@ namespace BrainologyStudyDatabase
             this.H_TABAddStudy = new MetroFramework.Controls.MetroTabPage();
             this.H_PNLTabAddStudy = new MetroFramework.Controls.MetroPanel();
             this.H_SBTNNewVersion = new MetroFramework.Controls.MetroButton();
-            this.H_SBTNAddVersion = new MetroFramework.Controls.MetroButton();
+            this.H_SBTNSaveVersion = new MetroFramework.Controls.MetroButton();
             this.H_S_TXTVersionNumber = new MetroFramework.Controls.MetroTextBox();
             this.H_SLBLVersionNumber = new MetroFramework.Controls.MetroLabel();
             this.H_S_TXTVersionName = new MetroFramework.Controls.MetroTextBox();
@@ -69,7 +69,7 @@ namespace BrainologyStudyDatabase
             this.H_SLBLStudyData = new MetroFramework.Controls.MetroLabel();
             this.metroPanel3 = new MetroFramework.Controls.MetroPanel();
             this.metroLabel3 = new MetroFramework.Controls.MetroLabel();
-            this.S_H_BTNAddStudy = new MetroFramework.Controls.MetroButton();
+            this.S_H_BTNSaveStudy = new MetroFramework.Controls.MetroButton();
             this.H_S_DTPStart_Date = new MetroFramework.Controls.MetroDateTime();
             this.H_S_DTPEnd_Date = new MetroFramework.Controls.MetroDateTime();
             this.H_S_CBXStudyType = new MetroFramework.Controls.MetroComboBox();
@@ -81,6 +81,10 @@ namespace BrainologyStudyDatabase
             this.H_S_LBLStudySelect = new MetroFramework.Controls.MetroLabel();
             this.H_S_CBXStudySelect = new MetroFramework.Controls.MetroComboBox();
             this.H_TABAddParticipant = new System.Windows.Forms.TabPage();
+            this.H_P_PNLMain = new MetroFramework.Controls.MetroPanel();
+            this.H_P_FLPFields = new System.Windows.Forms.FlowLayoutPanel();
+            this.H_P_LBLSelectParticipant = new MetroFramework.Controls.MetroLabel();
+            this.H_P_CBXSelectParticipant = new MetroFramework.Controls.MetroComboBox();
             this.H_TABAddSession = new System.Windows.Forms.TabPage();
             this.H_TABAddVisit = new System.Windows.Forms.TabPage();
             this.TABQueryData = new System.Windows.Forms.TabPage();
@@ -120,6 +124,8 @@ namespace BrainologyStudyDatabase
             this.H_S_TPAddSegment.SuspendLayout();
             this.metroPanel5.SuspendLayout();
             this.metroPanel3.SuspendLayout();
+            this.H_TABAddParticipant.SuspendLayout();
+            this.H_P_PNLMain.SuspendLayout();
             this.TABQueryData.SuspendLayout();
             this.QD_PNLBack.SuspendLayout();
             this.QD_FLPBack.SuspendLayout();
@@ -143,7 +149,7 @@ namespace BrainologyStudyDatabase
             this.TabControlMain.HotTrack = true;
             this.TabControlMain.ItemSize = new System.Drawing.Size(150, 30);
             this.TabControlMain.Location = new System.Drawing.Point(45, 98);
-            this.TabControlMain.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.TabControlMain.Margin = new System.Windows.Forms.Padding(4);
             this.TabControlMain.Multiline = true;
             this.TabControlMain.Name = "TabControlMain";
             this.TabControlMain.SelectedIndex = 0;
@@ -174,7 +180,7 @@ namespace BrainologyStudyDatabase
             this.H_PNLTab.HorizontalScrollbarHighlightOnWheel = false;
             this.H_PNLTab.HorizontalScrollbarSize = 12;
             this.H_PNLTab.Location = new System.Drawing.Point(4, 4);
-            this.H_PNLTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.H_PNLTab.Margin = new System.Windows.Forms.Padding(4);
             this.H_PNLTab.Name = "H_PNLTab";
             this.H_PNLTab.Size = new System.Drawing.Size(1207, 618);
             this.H_PNLTab.TabIndex = 0;
@@ -193,9 +199,9 @@ namespace BrainologyStudyDatabase
             this.H_TABControl.FontSize = MetroFramework.MetroTabControlSize.Tall;
             this.H_TABControl.ItemSize = new System.Drawing.Size(120, 60);
             this.H_TABControl.Location = new System.Drawing.Point(4, 4);
-            this.H_TABControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.H_TABControl.Margin = new System.Windows.Forms.Padding(4);
             this.H_TABControl.Name = "H_TABControl";
-            this.H_TABControl.SelectedIndex = 1;
+            this.H_TABControl.SelectedIndex = 2;
             this.H_TABControl.Size = new System.Drawing.Size(1199, 610);
             this.H_TABControl.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.H_TABControl.Style = MetroFramework.MetroColorStyle.Magenta;
@@ -209,7 +215,7 @@ namespace BrainologyStudyDatabase
             this.H_TABLanding.Controls.Add(this.htmlPanel1);
             this.H_TABLanding.Controls.Add(this.metroLabel1);
             this.H_TABLanding.Location = new System.Drawing.Point(4, 4);
-            this.H_TABLanding.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.H_TABLanding.Margin = new System.Windows.Forms.Padding(4);
             this.H_TABLanding.Name = "H_TABLanding";
             this.H_TABLanding.Size = new System.Drawing.Size(1191, 542);
             this.H_TABLanding.TabIndex = 6;
@@ -221,7 +227,7 @@ namespace BrainologyStudyDatabase
             this.htmlPanel1.AutoScrollMinSize = new System.Drawing.Size(443, 23);
             this.htmlPanel1.BackColor = System.Drawing.SystemColors.Control;
             this.htmlPanel1.Location = new System.Drawing.Point(36, 97);
-            this.htmlPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.htmlPanel1.Margin = new System.Windows.Forms.Padding(4);
             this.htmlPanel1.Name = "htmlPanel1";
             this.htmlPanel1.Size = new System.Drawing.Size(443, 409);
             this.htmlPanel1.TabIndex = 1;
@@ -246,7 +252,7 @@ namespace BrainologyStudyDatabase
             this.H_TABAddStudy.HorizontalScrollbarHighlightOnWheel = false;
             this.H_TABAddStudy.HorizontalScrollbarSize = 12;
             this.H_TABAddStudy.Location = new System.Drawing.Point(4, 4);
-            this.H_TABAddStudy.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.H_TABAddStudy.Margin = new System.Windows.Forms.Padding(4);
             this.H_TABAddStudy.Name = "H_TABAddStudy";
             this.H_TABAddStudy.Size = new System.Drawing.Size(1191, 542);
             this.H_TABAddStudy.TabIndex = 0;
@@ -259,7 +265,7 @@ namespace BrainologyStudyDatabase
             // 
             this.H_PNLTabAddStudy.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.H_PNLTabAddStudy.Controls.Add(this.H_SBTNNewVersion);
-            this.H_PNLTabAddStudy.Controls.Add(this.H_SBTNAddVersion);
+            this.H_PNLTabAddStudy.Controls.Add(this.H_SBTNSaveVersion);
             this.H_PNLTabAddStudy.Controls.Add(this.H_S_TXTVersionNumber);
             this.H_PNLTabAddStudy.Controls.Add(this.H_SLBLVersionNumber);
             this.H_PNLTabAddStudy.Controls.Add(this.H_S_TXTVersionName);
@@ -276,7 +282,7 @@ namespace BrainologyStudyDatabase
             this.H_PNLTabAddStudy.HorizontalScrollbarHighlightOnWheel = false;
             this.H_PNLTabAddStudy.HorizontalScrollbarSize = 12;
             this.H_PNLTabAddStudy.Location = new System.Drawing.Point(-5, -5);
-            this.H_PNLTabAddStudy.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.H_PNLTabAddStudy.Margin = new System.Windows.Forms.Padding(4);
             this.H_PNLTabAddStudy.Name = "H_PNLTabAddStudy";
             this.H_PNLTabAddStudy.Size = new System.Drawing.Size(1189, 551);
             this.H_PNLTabAddStudy.TabIndex = 2;
@@ -287,22 +293,24 @@ namespace BrainologyStudyDatabase
             // H_SBTNNewVersion
             // 
             this.H_SBTNNewVersion.Location = new System.Drawing.Point(839, 89);
-            this.H_SBTNNewVersion.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.H_SBTNNewVersion.Margin = new System.Windows.Forms.Padding(4);
             this.H_SBTNNewVersion.Name = "H_SBTNNewVersion";
             this.H_SBTNNewVersion.Size = new System.Drawing.Size(147, 28);
             this.H_SBTNNewVersion.TabIndex = 30;
             this.H_SBTNNewVersion.Text = "Make New Version";
             this.H_SBTNNewVersion.UseSelectable = true;
+            this.H_SBTNNewVersion.Click += new System.EventHandler(this.H_SBTNNewVersion_Click);
             // 
-            // H_SBTNAddVersion
+            // H_SBTNSaveVersion
             // 
-            this.H_SBTNAddVersion.Location = new System.Drawing.Point(993, 89);
-            this.H_SBTNAddVersion.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.H_SBTNAddVersion.Name = "H_SBTNAddVersion";
-            this.H_SBTNAddVersion.Size = new System.Drawing.Size(147, 28);
-            this.H_SBTNAddVersion.TabIndex = 29;
-            this.H_SBTNAddVersion.Text = "Add Version";
-            this.H_SBTNAddVersion.UseSelectable = true;
+            this.H_SBTNSaveVersion.Location = new System.Drawing.Point(993, 89);
+            this.H_SBTNSaveVersion.Margin = new System.Windows.Forms.Padding(4);
+            this.H_SBTNSaveVersion.Name = "H_SBTNSaveVersion";
+            this.H_SBTNSaveVersion.Size = new System.Drawing.Size(147, 28);
+            this.H_SBTNSaveVersion.TabIndex = 29;
+            this.H_SBTNSaveVersion.Text = "Save Version";
+            this.H_SBTNSaveVersion.UseSelectable = true;
+            this.H_SBTNSaveVersion.Click += new System.EventHandler(this.H_SBTNSaveVersion_Click);
             // 
             // H_S_TXTVersionNumber
             // 
@@ -310,10 +318,10 @@ namespace BrainologyStudyDatabase
             // 
             // 
             this.H_S_TXTVersionNumber.CustomButton.Image = null;
-            this.H_S_TXTVersionNumber.CustomButton.Location = new System.Drawing.Point(217, 2);
-            this.H_S_TXTVersionNumber.CustomButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.H_S_TXTVersionNumber.CustomButton.Location = new System.Drawing.Point(163, 2);
+            this.H_S_TXTVersionNumber.CustomButton.Margin = new System.Windows.Forms.Padding(5);
             this.H_S_TXTVersionNumber.CustomButton.Name = "";
-            this.H_S_TXTVersionNumber.CustomButton.Size = new System.Drawing.Size(41, 38);
+            this.H_S_TXTVersionNumber.CustomButton.Size = new System.Drawing.Size(31, 31);
             this.H_S_TXTVersionNumber.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
             this.H_S_TXTVersionNumber.CustomButton.TabIndex = 1;
             this.H_S_TXTVersionNumber.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
@@ -322,7 +330,7 @@ namespace BrainologyStudyDatabase
             this.H_S_TXTVersionNumber.FontSize = MetroFramework.MetroTextBoxSize.Medium;
             this.H_S_TXTVersionNumber.Lines = new string[0];
             this.H_S_TXTVersionNumber.Location = new System.Drawing.Point(943, 46);
-            this.H_S_TXTVersionNumber.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.H_S_TXTVersionNumber.Margin = new System.Windows.Forms.Padding(4);
             this.H_S_TXTVersionNumber.MaxLength = 32767;
             this.H_S_TXTVersionNumber.Name = "H_S_TXTVersionNumber";
             this.H_S_TXTVersionNumber.PasswordChar = '\0';
@@ -354,10 +362,10 @@ namespace BrainologyStudyDatabase
             // 
             // 
             this.H_S_TXTVersionName.CustomButton.Image = null;
-            this.H_S_TXTVersionName.CustomButton.Location = new System.Drawing.Point(217, 2);
-            this.H_S_TXTVersionName.CustomButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.H_S_TXTVersionName.CustomButton.Location = new System.Drawing.Point(163, 2);
+            this.H_S_TXTVersionName.CustomButton.Margin = new System.Windows.Forms.Padding(5);
             this.H_S_TXTVersionName.CustomButton.Name = "";
-            this.H_S_TXTVersionName.CustomButton.Size = new System.Drawing.Size(41, 38);
+            this.H_S_TXTVersionName.CustomButton.Size = new System.Drawing.Size(31, 31);
             this.H_S_TXTVersionName.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
             this.H_S_TXTVersionName.CustomButton.TabIndex = 1;
             this.H_S_TXTVersionName.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
@@ -366,7 +374,7 @@ namespace BrainologyStudyDatabase
             this.H_S_TXTVersionName.FontSize = MetroFramework.MetroTextBoxSize.Medium;
             this.H_S_TXTVersionName.Lines = new string[0];
             this.H_S_TXTVersionName.Location = new System.Drawing.Point(737, 46);
-            this.H_S_TXTVersionName.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.H_S_TXTVersionName.Margin = new System.Windows.Forms.Padding(4);
             this.H_S_TXTVersionName.MaxLength = 32767;
             this.H_S_TXTVersionName.Name = "H_S_TXTVersionName";
             this.H_S_TXTVersionName.PasswordChar = '\0';
@@ -399,7 +407,7 @@ namespace BrainologyStudyDatabase
             this.H_S_TCSegments.Location = new System.Drawing.Point(385, 101);
             this.H_S_TCSegments.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.H_S_TCSegments.Name = "H_S_TCSegments";
-            this.H_S_TCSegments.SelectedIndex = 0;
+            this.H_S_TCSegments.SelectedIndex = 1;
             this.H_S_TCSegments.Size = new System.Drawing.Size(765, 418);
             this.H_S_TCSegments.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.H_S_TCSegments.Style = MetroFramework.MetroColorStyle.Magenta;
@@ -483,12 +491,13 @@ namespace BrainologyStudyDatabase
             // H_S_ASBTNAddSegment
             // 
             this.H_S_ASBTNAddSegment.Location = new System.Drawing.Point(397, 283);
-            this.H_S_ASBTNAddSegment.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.H_S_ASBTNAddSegment.Margin = new System.Windows.Forms.Padding(4);
             this.H_S_ASBTNAddSegment.Name = "H_S_ASBTNAddSegment";
             this.H_S_ASBTNAddSegment.Size = new System.Drawing.Size(125, 37);
             this.H_S_ASBTNAddSegment.TabIndex = 28;
             this.H_S_ASBTNAddSegment.Text = "Add Segement";
             this.H_S_ASBTNAddSegment.UseSelectable = true;
+            this.H_S_ASBTNAddSegment.Click += new System.EventHandler(this.H_S_ASBTNAddSegment_Click);
             // 
             // H_S_ASLBLSegmentDuration
             // 
@@ -505,7 +514,7 @@ namespace BrainologyStudyDatabase
             this.H_S_ASMTXTSegmentDuration.AsciiOnly = true;
             this.H_S_ASMTXTSegmentDuration.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.H_S_ASMTXTSegmentDuration.Location = new System.Drawing.Point(397, 212);
-            this.H_S_ASMTXTSegmentDuration.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.H_S_ASMTXTSegmentDuration.Margin = new System.Windows.Forms.Padding(4);
             this.H_S_ASMTXTSegmentDuration.Mask = "90:00";
             this.H_S_ASMTXTSegmentDuration.Name = "H_S_ASMTXTSegmentDuration";
             this.H_S_ASMTXTSegmentDuration.Size = new System.Drawing.Size(61, 30);
@@ -519,10 +528,10 @@ namespace BrainologyStudyDatabase
             // 
             // 
             this.H_S_ASTXTSegmentSource.CustomButton.Image = null;
-            this.H_S_ASTXTSegmentSource.CustomButton.Location = new System.Drawing.Point(340, 2);
-            this.H_S_ASTXTSegmentSource.CustomButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.H_S_ASTXTSegmentSource.CustomButton.Location = new System.Drawing.Point(255, 2);
+            this.H_S_ASTXTSegmentSource.CustomButton.Margin = new System.Windows.Forms.Padding(5);
             this.H_S_ASTXTSegmentSource.CustomButton.Name = "";
-            this.H_S_ASTXTSegmentSource.CustomButton.Size = new System.Drawing.Size(41, 38);
+            this.H_S_ASTXTSegmentSource.CustomButton.Size = new System.Drawing.Size(31, 31);
             this.H_S_ASTXTSegmentSource.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
             this.H_S_ASTXTSegmentSource.CustomButton.TabIndex = 1;
             this.H_S_ASTXTSegmentSource.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
@@ -531,7 +540,7 @@ namespace BrainologyStudyDatabase
             this.H_S_ASTXTSegmentSource.FontSize = MetroFramework.MetroTextBoxSize.Medium;
             this.H_S_ASTXTSegmentSource.Lines = new string[0];
             this.H_S_ASTXTSegmentSource.Location = new System.Drawing.Point(397, 137);
-            this.H_S_ASTXTSegmentSource.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.H_S_ASTXTSegmentSource.Margin = new System.Windows.Forms.Padding(4);
             this.H_S_ASTXTSegmentSource.MaxLength = 32767;
             this.H_S_ASTXTSegmentSource.Name = "H_S_ASTXTSegmentSource";
             this.H_S_ASTXTSegmentSource.PasswordChar = '\0';
@@ -563,10 +572,10 @@ namespace BrainologyStudyDatabase
             // 
             // 
             this.H_S_ASTXTSegmentName.CustomButton.Image = null;
-            this.H_S_ASTXTSegmentName.CustomButton.Location = new System.Drawing.Point(340, 2);
-            this.H_S_ASTXTSegmentName.CustomButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.H_S_ASTXTSegmentName.CustomButton.Location = new System.Drawing.Point(255, 2);
+            this.H_S_ASTXTSegmentName.CustomButton.Margin = new System.Windows.Forms.Padding(5);
             this.H_S_ASTXTSegmentName.CustomButton.Name = "";
-            this.H_S_ASTXTSegmentName.CustomButton.Size = new System.Drawing.Size(41, 38);
+            this.H_S_ASTXTSegmentName.CustomButton.Size = new System.Drawing.Size(31, 31);
             this.H_S_ASTXTSegmentName.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
             this.H_S_ASTXTSegmentName.CustomButton.TabIndex = 1;
             this.H_S_ASTXTSegmentName.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
@@ -575,7 +584,7 @@ namespace BrainologyStudyDatabase
             this.H_S_ASTXTSegmentName.FontSize = MetroFramework.MetroTextBoxSize.Medium;
             this.H_S_ASTXTSegmentName.Lines = new string[0];
             this.H_S_ASTXTSegmentName.Location = new System.Drawing.Point(397, 47);
-            this.H_S_ASTXTSegmentName.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.H_S_ASTXTSegmentName.Margin = new System.Windows.Forms.Padding(4);
             this.H_S_ASTXTSegmentName.MaxLength = 32767;
             this.H_S_ASTXTSegmentName.Name = "H_S_ASTXTSegmentName";
             this.H_S_ASTXTSegmentName.PasswordChar = '\0';
@@ -613,12 +622,14 @@ namespace BrainologyStudyDatabase
             // H_S_ASCLBStudyVersion
             // 
             this.H_S_ASCLBStudyVersion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.H_S_ASCLBStudyVersion.CheckOnClick = true;
             this.H_S_ASCLBStudyVersion.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.H_S_ASCLBStudyVersion.ForeColor = System.Drawing.SystemColors.WindowText;
             this.H_S_ASCLBStudyVersion.FormattingEnabled = true;
             this.H_S_ASCLBStudyVersion.Location = new System.Drawing.Point(3, 47);
             this.H_S_ASCLBStudyVersion.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.H_S_ASCLBStudyVersion.Name = "H_S_ASCLBStudyVersion";
-            this.H_S_ASCLBStudyVersion.Size = new System.Drawing.Size(331, 266);
+            this.H_S_ASCLBStudyVersion.Size = new System.Drawing.Size(331, 242);
             this.H_S_ASCLBStudyVersion.TabIndex = 2;
             // 
             // H_S_LBLVersionSelect
@@ -636,7 +647,7 @@ namespace BrainologyStudyDatabase
             this.H_S_CBXVersionSelect.FormattingEnabled = true;
             this.H_S_CBXVersionSelect.ItemHeight = 24;
             this.H_S_CBXVersionSelect.Location = new System.Drawing.Point(385, 47);
-            this.H_S_CBXVersionSelect.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.H_S_CBXVersionSelect.Margin = new System.Windows.Forms.Padding(4);
             this.H_S_CBXVersionSelect.Name = "H_S_CBXVersionSelect";
             this.H_S_CBXVersionSelect.Size = new System.Drawing.Size(325, 30);
             this.H_S_CBXVersionSelect.Style = MetroFramework.MetroColorStyle.Magenta;
@@ -647,12 +658,13 @@ namespace BrainologyStudyDatabase
             // S_H_BTNNewStudy
             // 
             this.S_H_BTNNewStudy.Location = new System.Drawing.Point(207, 89);
-            this.S_H_BTNNewStudy.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.S_H_BTNNewStudy.Margin = new System.Windows.Forms.Padding(4);
             this.S_H_BTNNewStudy.Name = "S_H_BTNNewStudy";
             this.S_H_BTNNewStudy.Size = new System.Drawing.Size(147, 28);
             this.S_H_BTNNewStudy.TabIndex = 21;
             this.S_H_BTNNewStudy.Text = "Make New Study";
             this.S_H_BTNNewStudy.UseSelectable = true;
+            this.S_H_BTNNewStudy.Click += new System.EventHandler(this.S_H_BTNNewStudy_Click);
             // 
             // H_SLBLStudyData
             // 
@@ -668,7 +680,7 @@ namespace BrainologyStudyDatabase
             // 
             this.metroPanel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.metroPanel3.Controls.Add(this.metroLabel3);
-            this.metroPanel3.Controls.Add(this.S_H_BTNAddStudy);
+            this.metroPanel3.Controls.Add(this.S_H_BTNSaveStudy);
             this.metroPanel3.Controls.Add(this.H_S_DTPStart_Date);
             this.metroPanel3.Controls.Add(this.H_S_DTPEnd_Date);
             this.metroPanel3.Controls.Add(this.H_S_CBXStudyType);
@@ -681,7 +693,7 @@ namespace BrainologyStudyDatabase
             this.metroPanel3.HorizontalScrollbarHighlightOnWheel = false;
             this.metroPanel3.HorizontalScrollbarSize = 12;
             this.metroPanel3.Location = new System.Drawing.Point(27, 148);
-            this.metroPanel3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.metroPanel3.Margin = new System.Windows.Forms.Padding(4);
             this.metroPanel3.Name = "metroPanel3";
             this.metroPanel3.Size = new System.Drawing.Size(326, 371);
             this.metroPanel3.TabIndex = 18;
@@ -699,21 +711,22 @@ namespace BrainologyStudyDatabase
             this.metroLabel3.TabIndex = 21;
             this.metroLabel3.Text = "*Required";
             // 
-            // S_H_BTNAddStudy
+            // S_H_BTNSaveStudy
             // 
-            this.S_H_BTNAddStudy.Location = new System.Drawing.Point(179, 324);
-            this.S_H_BTNAddStudy.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.S_H_BTNAddStudy.Name = "S_H_BTNAddStudy";
-            this.S_H_BTNAddStudy.Size = new System.Drawing.Size(127, 28);
-            this.S_H_BTNAddStudy.TabIndex = 20;
-            this.S_H_BTNAddStudy.Text = "Add Study";
-            this.S_H_BTNAddStudy.UseSelectable = true;
+            this.S_H_BTNSaveStudy.Location = new System.Drawing.Point(179, 324);
+            this.S_H_BTNSaveStudy.Margin = new System.Windows.Forms.Padding(4);
+            this.S_H_BTNSaveStudy.Name = "S_H_BTNSaveStudy";
+            this.S_H_BTNSaveStudy.Size = new System.Drawing.Size(127, 28);
+            this.S_H_BTNSaveStudy.TabIndex = 20;
+            this.S_H_BTNSaveStudy.Text = "Save Study";
+            this.S_H_BTNSaveStudy.UseSelectable = true;
+            this.S_H_BTNSaveStudy.Click += new System.EventHandler(this.S_H_BTNSaveStudy_Click);
             // 
             // H_S_DTPStart_Date
             // 
             this.H_S_DTPStart_Date.Location = new System.Drawing.Point(16, 199);
-            this.H_S_DTPStart_Date.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.H_S_DTPStart_Date.MinimumSize = new System.Drawing.Size(0, 30);
+            this.H_S_DTPStart_Date.Margin = new System.Windows.Forms.Padding(4);
+            this.H_S_DTPStart_Date.MinimumSize = new System.Drawing.Size(4, 30);
             this.H_S_DTPStart_Date.Name = "H_S_DTPStart_Date";
             this.H_S_DTPStart_Date.Size = new System.Drawing.Size(288, 30);
             this.H_S_DTPStart_Date.TabIndex = 16;
@@ -721,8 +734,8 @@ namespace BrainologyStudyDatabase
             // H_S_DTPEnd_Date
             // 
             this.H_S_DTPEnd_Date.Location = new System.Drawing.Point(16, 271);
-            this.H_S_DTPEnd_Date.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.H_S_DTPEnd_Date.MinimumSize = new System.Drawing.Size(0, 30);
+            this.H_S_DTPEnd_Date.Margin = new System.Windows.Forms.Padding(4);
+            this.H_S_DTPEnd_Date.MinimumSize = new System.Drawing.Size(4, 30);
             this.H_S_DTPEnd_Date.Name = "H_S_DTPEnd_Date";
             this.H_S_DTPEnd_Date.Size = new System.Drawing.Size(288, 30);
             this.H_S_DTPEnd_Date.TabIndex = 17;
@@ -736,7 +749,7 @@ namespace BrainologyStudyDatabase
             "Eye-Tracking",
             "EEG/Eye-Tracking"});
             this.H_S_CBXStudyType.Location = new System.Drawing.Point(16, 126);
-            this.H_S_CBXStudyType.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.H_S_CBXStudyType.Margin = new System.Windows.Forms.Padding(4);
             this.H_S_CBXStudyType.Name = "H_S_CBXStudyType";
             this.H_S_CBXStudyType.Size = new System.Drawing.Size(288, 30);
             this.H_S_CBXStudyType.TabIndex = 14;
@@ -768,10 +781,10 @@ namespace BrainologyStudyDatabase
             // 
             // 
             this.H_S_TXTStudyName.CustomButton.Image = null;
-            this.H_S_TXTStudyName.CustomButton.Location = new System.Drawing.Point(340, 2);
-            this.H_S_TXTStudyName.CustomButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.H_S_TXTStudyName.CustomButton.Location = new System.Drawing.Point(255, 2);
+            this.H_S_TXTStudyName.CustomButton.Margin = new System.Windows.Forms.Padding(5);
             this.H_S_TXTStudyName.CustomButton.Name = "";
-            this.H_S_TXTStudyName.CustomButton.Size = new System.Drawing.Size(41, 38);
+            this.H_S_TXTStudyName.CustomButton.Size = new System.Drawing.Size(31, 31);
             this.H_S_TXTStudyName.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
             this.H_S_TXTStudyName.CustomButton.TabIndex = 1;
             this.H_S_TXTStudyName.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
@@ -780,7 +793,7 @@ namespace BrainologyStudyDatabase
             this.H_S_TXTStudyName.FontSize = MetroFramework.MetroTextBoxSize.Medium;
             this.H_S_TXTStudyName.Lines = new string[0];
             this.H_S_TXTStudyName.Location = new System.Drawing.Point(16, 48);
-            this.H_S_TXTStudyName.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.H_S_TXTStudyName.Margin = new System.Windows.Forms.Padding(4);
             this.H_S_TXTStudyName.MaxLength = 32767;
             this.H_S_TXTStudyName.Name = "H_S_TXTStudyName";
             this.H_S_TXTStudyName.PasswordChar = '\0';
@@ -831,7 +844,7 @@ namespace BrainologyStudyDatabase
             this.H_S_CBXStudySelect.FormattingEnabled = true;
             this.H_S_CBXStudySelect.ItemHeight = 24;
             this.H_S_CBXStudySelect.Location = new System.Drawing.Point(27, 47);
-            this.H_S_CBXStudySelect.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.H_S_CBXStudySelect.Margin = new System.Windows.Forms.Padding(4);
             this.H_S_CBXStudySelect.Name = "H_S_CBXStudySelect";
             this.H_S_CBXStudySelect.Size = new System.Drawing.Size(325, 30);
             this.H_S_CBXStudySelect.Style = MetroFramework.MetroColorStyle.Magenta;
@@ -842,18 +855,66 @@ namespace BrainologyStudyDatabase
             // H_TABAddParticipant
             // 
             this.H_TABAddParticipant.BackColor = System.Drawing.Color.White;
+            this.H_TABAddParticipant.Controls.Add(this.H_P_PNLMain);
             this.H_TABAddParticipant.Location = new System.Drawing.Point(4, 4);
-            this.H_TABAddParticipant.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.H_TABAddParticipant.Margin = new System.Windows.Forms.Padding(4);
             this.H_TABAddParticipant.Name = "H_TABAddParticipant";
             this.H_TABAddParticipant.Size = new System.Drawing.Size(1191, 542);
             this.H_TABAddParticipant.TabIndex = 2;
             this.H_TABAddParticipant.Text = "Participant";
             // 
+            // H_P_PNLMain
+            // 
+            this.H_P_PNLMain.Controls.Add(this.H_P_FLPFields);
+            this.H_P_PNLMain.Controls.Add(this.H_P_LBLSelectParticipant);
+            this.H_P_PNLMain.Controls.Add(this.H_P_CBXSelectParticipant);
+            this.H_P_PNLMain.HorizontalScrollbarBarColor = true;
+            this.H_P_PNLMain.HorizontalScrollbarHighlightOnWheel = false;
+            this.H_P_PNLMain.HorizontalScrollbarSize = 10;
+            this.H_P_PNLMain.Location = new System.Drawing.Point(3, 3);
+            this.H_P_PNLMain.Name = "H_P_PNLMain";
+            this.H_P_PNLMain.Size = new System.Drawing.Size(1185, 536);
+            this.H_P_PNLMain.TabIndex = 0;
+            this.H_P_PNLMain.VerticalScrollbarBarColor = true;
+            this.H_P_PNLMain.VerticalScrollbarHighlightOnWheel = false;
+            this.H_P_PNLMain.VerticalScrollbarSize = 10;
+            // 
+            // H_P_FLPFields
+            // 
+            this.H_P_FLPFields.AutoScroll = true;
+            this.H_P_FLPFields.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.H_P_FLPFields.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.H_P_FLPFields.Location = new System.Drawing.Point(17, 68);
+            this.H_P_FLPFields.Name = "H_P_FLPFields";
+            this.H_P_FLPFields.Size = new System.Drawing.Size(1165, 465);
+            this.H_P_FLPFields.TabIndex = 4;
+            // 
+            // H_P_LBLSelectParticipant
+            // 
+            this.H_P_LBLSelectParticipant.AutoSize = true;
+            this.H_P_LBLSelectParticipant.Location = new System.Drawing.Point(17, 9);
+            this.H_P_LBLSelectParticipant.Name = "H_P_LBLSelectParticipant";
+            this.H_P_LBLSelectParticipant.Size = new System.Drawing.Size(114, 20);
+            this.H_P_LBLSelectParticipant.TabIndex = 3;
+            this.H_P_LBLSelectParticipant.Text = "Select Participant";
+            // 
+            // H_P_CBXSelectParticipant
+            // 
+            this.H_P_CBXSelectParticipant.FormattingEnabled = true;
+            this.H_P_CBXSelectParticipant.ItemHeight = 24;
+            this.H_P_CBXSelectParticipant.Location = new System.Drawing.Point(17, 32);
+            this.H_P_CBXSelectParticipant.Name = "H_P_CBXSelectParticipant";
+            this.H_P_CBXSelectParticipant.Size = new System.Drawing.Size(501, 30);
+            this.H_P_CBXSelectParticipant.Style = MetroFramework.MetroColorStyle.Magenta;
+            this.H_P_CBXSelectParticipant.TabIndex = 2;
+            this.H_P_CBXSelectParticipant.UseSelectable = true;
+            this.H_P_CBXSelectParticipant.SelectedIndexChanged += new System.EventHandler(this.H_P_CBXSelectParticipant_SelectedIndexChanged);
+            // 
             // H_TABAddSession
             // 
             this.H_TABAddSession.BackColor = System.Drawing.Color.White;
             this.H_TABAddSession.Location = new System.Drawing.Point(4, 4);
-            this.H_TABAddSession.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.H_TABAddSession.Margin = new System.Windows.Forms.Padding(4);
             this.H_TABAddSession.Name = "H_TABAddSession";
             this.H_TABAddSession.Size = new System.Drawing.Size(1191, 542);
             this.H_TABAddSession.TabIndex = 4;
@@ -863,7 +924,7 @@ namespace BrainologyStudyDatabase
             // 
             this.H_TABAddVisit.BackColor = System.Drawing.Color.White;
             this.H_TABAddVisit.Location = new System.Drawing.Point(4, 4);
-            this.H_TABAddVisit.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.H_TABAddVisit.Margin = new System.Windows.Forms.Padding(4);
             this.H_TABAddVisit.Name = "H_TABAddVisit";
             this.H_TABAddVisit.Size = new System.Drawing.Size(1191, 542);
             this.H_TABAddVisit.TabIndex = 5;
@@ -956,11 +1017,11 @@ namespace BrainologyStudyDatabase
             // QD_CBXChoosePrompt
             // 
             this.QD_CBXChoosePrompt.FormattingEnabled = true;
-            this.QD_CBXChoosePrompt.ItemHeight = 23;
+            this.QD_CBXChoosePrompt.ItemHeight = 24;
             this.QD_CBXChoosePrompt.Location = new System.Drawing.Point(20, 39);
             this.QD_CBXChoosePrompt.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.QD_CBXChoosePrompt.Name = "QD_CBXChoosePrompt";
-            this.QD_CBXChoosePrompt.Size = new System.Drawing.Size(953, 29);
+            this.QD_CBXChoosePrompt.Size = new System.Drawing.Size(953, 30);
             this.QD_CBXChoosePrompt.Style = MetroFramework.MetroColorStyle.Magenta;
             this.QD_CBXChoosePrompt.TabIndex = 2;
             this.QD_CBXChoosePrompt.UseSelectable = true;
@@ -1142,10 +1203,10 @@ namespace BrainologyStudyDatabase
             // 
             // 
             this.SQL_TXTScript.CustomButton.Image = null;
-            this.SQL_TXTScript.CustomButton.Location = new System.Drawing.Point(1156, 1);
+            this.SQL_TXTScript.CustomButton.Location = new System.Drawing.Point(867, 1);
             this.SQL_TXTScript.CustomButton.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.SQL_TXTScript.CustomButton.Name = "";
-            this.SQL_TXTScript.CustomButton.Size = new System.Drawing.Size(295, 272);
+            this.SQL_TXTScript.CustomButton.Size = new System.Drawing.Size(221, 221);
             this.SQL_TXTScript.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
             this.SQL_TXTScript.CustomButton.TabIndex = 1;
             this.SQL_TXTScript.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
@@ -1199,7 +1260,7 @@ namespace BrainologyStudyDatabase
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(1301, 799);
             this.Controls.Add(this.TabControlMain);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "HomeScreen";
             this.Padding = new System.Windows.Forms.Padding(27, 74, 27, 25);
             this.Style = MetroFramework.MetroColorStyle.Magenta;
@@ -1226,6 +1287,9 @@ namespace BrainologyStudyDatabase
             this.metroPanel5.PerformLayout();
             this.metroPanel3.ResumeLayout(false);
             this.metroPanel3.PerformLayout();
+            this.H_TABAddParticipant.ResumeLayout(false);
+            this.H_P_PNLMain.ResumeLayout(false);
+            this.H_P_PNLMain.PerformLayout();
             this.TABQueryData.ResumeLayout(false);
             this.QD_PNLBack.ResumeLayout(false);
             this.QD_PNLBack.PerformLayout();
@@ -1299,7 +1363,7 @@ namespace BrainologyStudyDatabase
         private MetroFramework.Controls.MetroLabel H_S_ASLBLSegmentDuration;
         private MetroFramework.Controls.MetroButton H_S_ASBTNAddSegment;
         private MetroFramework.Controls.MetroButton H_SBTNNewVersion;
-        private MetroFramework.Controls.MetroButton H_SBTNAddVersion;
+        private MetroFramework.Controls.MetroButton H_SBTNSaveVersion;
         private MetroFramework.Controls.MetroTextBox H_S_TXTVersionNumber;
         private MetroFramework.Controls.MetroLabel H_SLBLVersionNumber;
         private MetroFramework.Controls.MetroTextBox H_S_TXTVersionName;
@@ -1307,7 +1371,7 @@ namespace BrainologyStudyDatabase
         private MetroFramework.Controls.MetroLabel H_SLBLStudyData;
         private MetroFramework.Controls.MetroPanel metroPanel3;
         private MetroFramework.Controls.MetroLabel metroLabel3;
-        private MetroFramework.Controls.MetroButton S_H_BTNAddStudy;
+        private MetroFramework.Controls.MetroButton S_H_BTNSaveStudy;
         private MetroFramework.Controls.MetroDateTime H_S_DTPStart_Date;
         private MetroFramework.Controls.MetroDateTime H_S_DTPEnd_Date;
         private MetroFramework.Controls.MetroComboBox H_S_CBXStudyType;
@@ -1319,6 +1383,10 @@ namespace BrainologyStudyDatabase
         private System.Windows.Forms.TabPage H_TABLanding;
         private MetroFramework.Drawing.Html.HtmlPanel htmlPanel1;
         private MetroFramework.Controls.MetroLabel metroLabel1;
+        private MetroFramework.Controls.MetroPanel H_P_PNLMain;
+        private System.Windows.Forms.FlowLayoutPanel H_P_FLPFields;
+        private MetroFramework.Controls.MetroLabel H_P_LBLSelectParticipant;
+        private MetroFramework.Controls.MetroComboBox H_P_CBXSelectParticipant;
     }
 }
 

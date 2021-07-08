@@ -10,12 +10,16 @@ using System.Windows.Forms;
 
 namespace BrainologyStudyDatabase
 {
-    public partial class ComboBoxControl : UserControl
+    public partial class TextBoxControl : UserControl
     {
         public int id;
-        public ComboBoxControl()
+        public MetroFramework.Controls.MetroLabel lbl;
+        public MetroFramework.Controls.MetroTextBox txt;
+        public TextBoxControl()
         {
             InitializeComponent();
+            lbl = TBC_LBL;
+            txt = TBC_TXT;
         }
     }
 }

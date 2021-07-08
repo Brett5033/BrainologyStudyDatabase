@@ -56,7 +56,7 @@ namespace BrainologyStudyDatabase
         }
 
         /// <summary>
-        /// Takes a "void" SQL command and executes it
+        /// Takes a "void" parameterized SQL command and executes it
         /// </summary>
         /// <param name="command"></param>
         public void executeCommand(string command, SqlParameter[] parameters)
@@ -111,6 +111,45 @@ namespace BrainologyStudyDatabase
                 return dTable;
             }
             catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                cnn.Close();
+                return new DataTable();
+                //throw ex;
+            }
+        }
+
+        public DataTable compileQuery(string query, SqlParameter[] parameters)
+        {
+            try
+            {
+                using (SqlCommand displayCommand = new SqlCommand(query, cnn))
+                {
+                    displayCommand.CommandType = CommandType.Text;
+
+                    Console.WriteLine("Adding Params: ");
+                    foreach (SqlParameter p in parameters)
+                    {
+                        displayCommand.Parameters.Add(p);
+                        Console.WriteLine(p.ParameterName + "\tType: " + p.SqlDbType.ToString() + "\tVal: " + p.Value);
+                    }
+
+                    DataTable dTable = new DataTable();
+
+                    cnn.Open();
+
+                    SqlDataReader myReader = displayCommand.ExecuteReader();
+                    dTable.Load(myReader);
+
+
+                    myReader.Close();
+                    cnn.Close();
+
+                    return dTable;
+                }
+               
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 cnn.Close();
@@ -180,8 +219,6 @@ namespace BrainologyStudyDatabase
         public static string getValidValuesForForiegnKey(string col, string table)
         {
             string e = table + "_COL." + col;
-            if (e == "STUDY_VERSION_COL.STUDY_ID")
-                Console.WriteLine("Match First");
             Console.WriteLine("Looking for: " + e);
             switch (e)
             {
@@ -220,6 +257,27 @@ namespace BrainologyStudyDatabase
                     }
             }
             return "";
+        }
+
+        public static List<string> getValuesFromEnums(string col, string table)
+        {
+            string e = table + "." + col;
+            Console.WriteLine("Looking for: " + e);
+
+            switch (e)
+            {
+                case "PARTICIPANT.GENDER":
+                    {
+                        Console.WriteLine("Match " + e);
+                        return new List<string>() { "Male", "Female", "Non-Binary" };
+                    }
+                case "PARTICIPANT.ETHNICITY":
+                    {
+                        Console.WriteLine("Match " + e);
+                        return new List<string>() { "WHITE", "HISPANIC or LATINO", "ASIAN", "BLACK or AFRICAN AMERICAN", "AMERICAN INDIAN or ALASKAN NATIVE", "NATIVE HAWAIIAN or OTHER PACIFIC ISLANDER" };
+                    }
+            }
+            return new List<string>();
         }
 
         public int getValueFromForeignKey(string value, DatabaseEnums.TABLES table, string ColName)
