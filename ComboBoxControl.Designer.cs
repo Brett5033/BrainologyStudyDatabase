@@ -39,7 +39,8 @@ namespace BrainologyStudyDatabase
             this.CBC_CBX.ItemHeight = 24;
             this.CBC_CBX.Location = new System.Drawing.Point(3, 29);
             this.CBC_CBX.Name = "CBC_CBX";
-            this.CBC_CBX.Size = new System.Drawing.Size(210, 30);
+            this.CBC_CBX.Size = new System.Drawing.Size(340, 30);
+            this.CBC_CBX.Style = MetroFramework.MetroColorStyle.Magenta;
             this.CBC_CBX.TabIndex = 0;
             this.CBC_CBX.UseSelectable = true;
             // 
@@ -60,7 +61,7 @@ namespace BrainologyStudyDatabase
             this.Controls.Add(this.CBC_LBL);
             this.Controls.Add(this.CBC_CBX);
             this.Name = "ComboBoxControl";
-            this.Size = new System.Drawing.Size(216, 62);
+            this.Size = new System.Drawing.Size(350, 62);
             this.ResumeLayout(false);
             this.PerformLayout();
 

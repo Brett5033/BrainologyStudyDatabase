@@ -39,6 +39,7 @@ namespace BrainologyStudyDatabase
         {
             try
             {
+                Console.WriteLine("Executing Command:\n" + command);
                 using (SqlCommand dbCommand = new SqlCommand(command, cnn))
                 {
                     dbCommand.CommandType = CommandType.Text;
@@ -67,7 +68,8 @@ namespace BrainologyStudyDatabase
                 {
                     dbCommand.CommandType = CommandType.Text;
 
-                    Console.WriteLine("Adding Params: ");
+                    Console.WriteLine("Executing Command:\n" + command);
+                    Console.WriteLine("Adding Params From List: ");
                     foreach(SqlParameter p in parameters)
                     {
                         dbCommand.Parameters.Add(p);
@@ -87,6 +89,39 @@ namespace BrainologyStudyDatabase
         }
 
         /// <summary>
+        /// Takes a "void" parameterized SQL command and executes it
+        /// </summary>
+        /// <param name="command"></param>
+        public int executeScalar(string command, SqlParameter[] parameters)
+        {
+            try
+            {
+                using (SqlCommand dbCommand = new SqlCommand(command, cnn))
+                {
+                    dbCommand.CommandType = CommandType.Text;
+
+                    Console.WriteLine("Executing Command:\n" + command);
+                    Console.WriteLine("Adding Params From List: ");
+                    foreach (SqlParameter p in parameters)
+                    {
+                        dbCommand.Parameters.Add(p);
+                        Console.WriteLine(p.ParameterName + "\tType: " + p.SqlDbType.ToString() + "\tVal: " + p.Value);
+                    }
+                    cnn.Open();
+                    int identity = Convert.ToInt32(dbCommand.ExecuteScalar());
+                    cnn.Close();
+                    return identity;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                cnn.Close();
+                throw ex;
+            }
+        }
+
+        /// <summary>
         /// Takes a query, executes it, and returns the dataTable representing the results
         /// </summary>
         /// <param name="query"></param>
@@ -95,6 +130,7 @@ namespace BrainologyStudyDatabase
         {
             try
             {
+                Console.WriteLine("Compiling Query:\n" + query);
                 SqlCommand displayCommand = new SqlCommand(query, cnn);
                 displayCommand.CommandType = CommandType.Text;
                 
@@ -127,7 +163,8 @@ namespace BrainologyStudyDatabase
                 {
                     displayCommand.CommandType = CommandType.Text;
 
-                    Console.WriteLine("Adding Params: ");
+                    Console.WriteLine("Compiling Query:\n" + query);
+                    Console.WriteLine("Adding Params From Query List: ");
                     foreach (SqlParameter p in parameters)
                     {
                         displayCommand.Parameters.Add(p);
@@ -157,6 +194,8 @@ namespace BrainologyStudyDatabase
                 //throw ex;
             }
         }
+
+        
 
         public int mergeDataTable(DataTable table, DatabaseEnums.TABLES currentTable)
         {
@@ -219,12 +258,12 @@ namespace BrainologyStudyDatabase
         public static string getValidValuesForForiegnKey(string col, string table)
         {
             string e = table + "_COL." + col;
-            Console.WriteLine("Looking for: " + e);
+            //Console.WriteLine("Looking for: " + e);
             switch (e)
             {
                 case "STUDY_VERSION_COL.STUDY_ID":
                     {
-                        Console.WriteLine("Match " + e);
+                        //Console.WriteLine("Match " + e);
                         return @"SELECT STUDY_ID, NAME FROM STUDY";
                     }
                 case "SEGMENT_COL.VERSION_ID":

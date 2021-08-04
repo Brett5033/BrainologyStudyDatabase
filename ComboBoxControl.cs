@@ -13,9 +13,13 @@ namespace BrainologyStudyDatabase
     public partial class ComboBoxControl : UserControl
     {
         public int id;
+        public MetroFramework.Controls.MetroLabel lbl;
+        public MetroFramework.Controls.MetroComboBox cbx;
         public ComboBoxControl()
         {
             InitializeComponent();
+            lbl = CBC_LBL;
+            cbx = CBC_CBX;
         }
     }
 }

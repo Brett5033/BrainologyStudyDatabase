@@ -48,7 +48,7 @@ namespace BrainologyStudyDatabase
             // 
             // 
             this.TBC_TXT.CustomButton.Image = null;
-            this.TBC_TXT.CustomButton.Location = new System.Drawing.Point(188, 1);
+            this.TBC_TXT.CustomButton.Location = new System.Drawing.Point(318, 1);
             this.TBC_TXT.CustomButton.Name = "";
             this.TBC_TXT.CustomButton.Size = new System.Drawing.Size(21, 21);
             this.TBC_TXT.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
@@ -67,7 +67,8 @@ namespace BrainologyStudyDatabase
             this.TBC_TXT.SelectionLength = 0;
             this.TBC_TXT.SelectionStart = 0;
             this.TBC_TXT.ShortcutsEnabled = true;
-            this.TBC_TXT.Size = new System.Drawing.Size(210, 23);
+            this.TBC_TXT.Size = new System.Drawing.Size(340, 23);
+            this.TBC_TXT.Style = MetroFramework.MetroColorStyle.Magenta;
             this.TBC_TXT.TabIndex = 2;
             this.TBC_TXT.Text = "metroTextBox1";
             this.TBC_TXT.UseSelectable = true;
@@ -82,7 +83,7 @@ namespace BrainologyStudyDatabase
             this.Controls.Add(this.TBC_TXT);
             this.Controls.Add(this.TBC_LBL);
             this.Name = "TextBoxControl";
-            this.Size = new System.Drawing.Size(216, 62);
+            this.Size = new System.Drawing.Size(350, 62);
             this.ResumeLayout(false);
             this.PerformLayout();
 

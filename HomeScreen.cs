@@ -325,6 +325,7 @@ namespace BrainologyStudyDatabase
         /// <param name="studyID"></param>
         private void H_S_populateStudyVersions(int studyID, int selectedIndexOverride = 0)
         {
+            Console.WriteLine("Populating study versions:");
             string query = string.Format("SELECT VERSION_ID, STUDY_ID, VERSION_NUM, DESCRIPTION FROM STUDY_VERSION WHERE STUDY_ID = {0}", studyID);
             DataTable result = db.compileQuery(query);
 
@@ -524,6 +525,75 @@ namespace BrainologyStudyDatabase
             H_S_populateStudyVersions(selectedVersionID);
         }
 
+        /// <summary>
+        /// Takes the paste data from the eeg output and creates corresponding segments 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void H_S_BTNGenerateSegmentsFromPaste_Click(object sender, EventArgs e)
+        {
+            H_S_AS_GenerateSegments(selectedVersionID);
+        }
+
+        private void H_S_AS_GenerateSegments(int versionID, bool update = true)
+        {
+            // Get clipboard data
+            string data = Clipboard.GetText();
+
+            Console.WriteLine("Clipboard Text:\n" + data);
+            // Parse columns
+
+            string[] lines = data.Split('\n');
+            if (lines.Length <= 0)
+            {
+                MessageBox.Show("Clipboard data not found, please copy EEG output data");
+                return;
+            }
+
+            foreach (string line in lines)
+            {
+                if (line == "")
+                    continue;
+
+                string[] items = line.Split('\t');
+
+                if (items.Length != 5)
+                {
+                    MessageBox.Show("Clipboard data not formatted correctly, please ensure the table is copied correctly");
+                    return;
+                }
+
+                string segmentName = items[0];
+
+                // Check to see if this segment exists already
+                string query = "SELECT NAME FROM SEGMENT WHERE NAME = @varNAME AND VERSION_ID = @varVERSION_ID";
+                SqlParameter[] parameters = new SqlParameter[] {
+                new SqlParameter("@varNAME", segmentName),
+                new SqlParameter("@varVERSION_ID", versionID)};
+
+                DataTable result = db.compileQuery(query, parameters);
+
+                if (result.Rows.Count > 0)
+                {
+                    // Segment already made
+                    Console.WriteLine("Segment " + segmentName + " is already created");
+                    continue;
+                }
+
+                // Free to make segment now
+                Console.WriteLine("\tAdding segment " + segmentName + " into version Id: " + versionID);
+                string sqlCommand = "INSERT INTO SEGMENT (VERSION_ID, NAME) VALUES (@versID, @segName)";
+                SqlParameter[] parameters2 = new SqlParameter[] {
+                    new SqlParameter("@versID", versionID),
+                    new SqlParameter("@segName", segmentName)};
+
+                db.executeCommand(sqlCommand, parameters2);
+                Console.WriteLine("Segments added, populate study versions? " + update);
+                if(update)
+                    H_S_populateStudyVersions(versionID);
+            }
+        }
+
         #endregion
 
         #region Participants
@@ -574,13 +644,30 @@ namespace BrainologyStudyDatabase
                 // Check if the field is a special field (cbx or date)
                 string data = choosenParticipant.ItemArray[i].ToString();
 
-                TextBoxControl tbx = new TextBoxControl();
-                tbx.id = i;
-                tbx.lbl.Text = fieldLabel;
-                tbx.txt.Text = data;
+                List<string> enumList = DatabaseHandler.getValuesFromEnums(fieldLabel, "PARTICIPANT");
+                if (enumList.Count > 0)
+                {
+                    ComboBoxControl tbx = new ComboBoxControl();
+                    tbx.id = i;
+                    tbx.lbl.Text = fieldLabel;
+                    tbx.cbx.DataSource = enumList;
+                    int r;
+                    int.TryParse(data, out r);
+                    tbx.cbx.SelectedIndex = r;
 
-                fieldControls.Add(tbx);
-                H_P_FLPFields.Controls.Add(tbx);
+                    fieldControls.Add(tbx);
+                    H_P_FLPFields.Controls.Add(tbx);
+                }
+                else
+                {
+                    TextBoxControl tbx = new TextBoxControl();
+                    tbx.id = i;
+                    tbx.lbl.Text = fieldLabel;
+                    tbx.txt.Text = data;
+
+                    fieldControls.Add(tbx);
+                    H_P_FLPFields.Controls.Add(tbx);
+                }
             }
         }
 
@@ -591,9 +678,314 @@ namespace BrainologyStudyDatabase
 
         private void LoadSessions()
         {
+            // STudy versions
+            string queryStudy = "SELECT v.VERSION_ID, s.NAME, v.DESCRIPTION FROM STUDY_VERSION v LEFT JOIN STUDY s ON v.STUDY_ID = s.STUDY_ID";
+            DataTable resultStudy = db.compileQuery(queryStudy);
+
+            resultStudy.Columns.Add("displayCol", typeof(string), "NAME + ' ' + DESCRIPTION");
+
+            H_Ses_CBXStudySelect.DataSource = resultStudy;
+            H_Ses_CBXStudySelect.ValueMember = "VERSION_ID";
+            H_Ses_CBXStudySelect.DisplayMember = "displayCol";
+            int val = 0;
+            int indexToSelect = 0;
+            for(int i = 0; i < H_Ses_CBXStudySelect.Items.Count; i++)
+            {
+                val = (int)((DataRowView)H_Ses_CBXStudySelect.Items[i]).Row.ItemArray[0];
+                if (val == H_Ses_CurrentStudyID)
+                {
+                    indexToSelect = i;
+                    break;
+                }    
+            }
+            H_Ses_CBXStudySelect.SelectedIndex = indexToSelect;
+
+
+            // Participant
+            string queryPart = "SELECT PARTICIPANT_ID, FIRST_NAME, LAST_NAME, AGE FROM PARTICIPANT";
+            DataTable resultPart = db.compileQuery(queryPart);
+
+            resultPart.Columns.Add("displayCol", typeof(string), "FIRST_NAME + ' ' + LAST_NAME + ' : ' + AGE");
+
+            H_Ses_CBXPartSelect.DataSource = resultPart;
+            H_Ses_CBXPartSelect.ValueMember = "PARTICIPANT_ID";
+            H_Ses_CBXPartSelect.DisplayMember = "displayCol";
+            val = 0;
+            indexToSelect = 0;
+            for (int i = 0; i < H_Ses_CBXPartSelect.Items.Count; i++)
+            {
+                val = (int)((DataRowView)H_Ses_CBXPartSelect.Items[i]).Row.ItemArray[0];
+                if (val == H_Ses_CurrentPartID)
+                {
+                    indexToSelect = i;
+                    break;
+                }
+            }
+            H_Ses_CBXPartSelect.SelectedIndex = indexToSelect;
+
+            // Fill in comboboxes for data
+            H_Ses_CBXInterview.DataSource = new List<string>() { "No", "Yes" };
+            H_Ses_CBXEEGData.DataSource = new List<string>() { "No", "Yes" };
+
+            // Try to fill in the 0,0 session
+            H_Ses_FindSession();
+        }
+
+        private int H_Ses_CurrentStudyID = 0;
+        private int H_Ses_CurrentSessionID = 0;
+        private int H_Ses_CurrentPartID = 0;
+        private void H_Ses_BTNFindSession_Click(object sender, EventArgs e)
+        {
+            H_Ses_FindSession();
+        }
+
+        private void H_Ses_FindSession()
+        {
+            if (H_Ses_CBXStudySelect.SelectedIndex == -1 || H_Ses_CBXPartSelect.SelectedIndex == -1)
+            {
+                MessageBox.Show("Please Select a value for both the study and participant");
+            }
+
+            int studyID = H_Ses_CurrentStudyID = (int)((DataRowView)H_Ses_CBXStudySelect.SelectedItem).Row.ItemArray[0];
+            int partID = H_Ses_CurrentPartID = (int)((DataRowView)H_Ses_CBXPartSelect.SelectedItem).Row.ItemArray[0];
+
+            // Query for existing sessions
+            string querySessions = "SELECT * FROM SESSION WHERE VERSION_ID = @parVERSION_ID AND PARTICIPANT_ID = @parPARTICIPANT_ID";
+            SqlParameter[] parametersSessions = new SqlParameter[] {
+            new SqlParameter("@parPARTICIPANT_ID", partID),
+            new SqlParameter("@parVERSION_ID", studyID)};
+
+            DataTable resultSessions = db.compileQuery(querySessions, parametersSessions);
+
+
+            if (resultSessions.Rows.Count > 0)
+            {
+                DataRow ses = resultSessions.Rows[0];
+                // Session Found, loading session
+                H_Ses_TXTReward.Text = ses.ItemArray[5].ToString();
+                H_Ses_CBXInterview.SelectedIndex = (int)ses.ItemArray[4];
+                H_Ses_CBXEEGData.SelectedIndex = (int)ses.ItemArray[6];
+                H_Ses_DTPDateTested.Value = (DateTime)ses.ItemArray[3];
+                H_Ses_CurrentSessionID = (int)ses.ItemArray[0];
+                H_Ses_PopulateEEGData((int)ses.ItemArray[0]);
+            }
+            else
+            {
+                // Session not found, creating new session
+                H_Ses_TXTReward.Text = "";
+                H_Ses_CBXInterview.SelectedIndex = 0;
+                H_Ses_CBXEEGData.SelectedIndex = 0;
+                H_Ses_DTPDateTested.Value = DateTime.Now;
+                H_Ses_PopulateEEGData(-1);
+            }
+        }
+
+        /// <summary>
+        /// Populates the EEG Data grid with all entries with the matching session id
+        /// </summary>
+        /// <param name="sesssionID"></param>
+        private void H_Ses_PopulateEEGData(int sessionID)
+        {
+            try
+            {
+                H_Ses_CurrentSessionID = sessionID;
+                string query = "SELECT eeg.SESSION_ID, eeg.SEGMENT_ID, seg.NAME ,eeg.DELTA, eeg.THETA, eeg.ALPHA, eeg.BETA FROM EEG_AMPLITUDE eeg LEFT JOIN SEGMENT seg ON eeg.SEGMENT_ID = seg.SEGMENT_ID WHERE SESSION_ID = @varSESSION_ID";
+                SqlParameter[] parameters = new SqlParameter[] {
+                new SqlParameter("@varSESSION_ID", sessionID) };
+
+                DataTable result = db.compileQuery(query, parameters);
+
+
+                if (result.Rows.Count > 0)
+                {
+                    H_Ses_DGVEEGData.DataSource = result;
+                    Console.WriteLine("Populating EEG Data for Session: " + sessionID);
+                }
+                else
+                {
+                    H_Ses_DGVEEGData.DataSource = result.Clone();
+                    Console.WriteLine("No EEG Data found for Session: " + sessionID);
+                }
+            }catch(SqlException ex)
+            {
+                MessageBox.Show("Error retrieving Session EEG data:\n" + ex.Message, "Query Error");
+            }
+        }
+
+        private void H_Ses_BTNSaveSession_Click(object sender, EventArgs e)
+        {
+            try
+            {   // Check if session exists to update
+                string sqlQuery = "SELECT * FROM SESSION WHERE VERSION_ID = @varVERSION_ID AND PARTICIPANT_ID = @varPARTICIPANT_ID";
+                SqlParameter[] queryParameters = new SqlParameter[] {
+                new SqlParameter("@varVERSION_ID", (int)((DataRowView)H_Ses_CBXStudySelect.SelectedItem).Row.ItemArray[0]),
+                new SqlParameter("@varPARTICIPANT_ID", (int)((DataRowView)H_Ses_CBXPartSelect.SelectedItem).Row.ItemArray[0])};
+
+                DataTable result = db.compileQuery(sqlQuery, queryParameters);
+
+                string sqlCommand;
+
+                SqlParameter[] parameters = new SqlParameter[] {
+                new SqlParameter("@varVERSION_ID", (int)((DataRowView)H_Ses_CBXStudySelect.SelectedItem).Row.ItemArray[0]),
+                new SqlParameter("@varPARTICIPANT_ID", (int)((DataRowView)H_Ses_CBXPartSelect.SelectedItem).Row.ItemArray[0]),
+                new SqlParameter("@varDATE_TESTED", H_Ses_DTPDateTested.Value),
+                new SqlParameter("@varINTERVIEW", H_Ses_CBXInterview.SelectedIndex),
+                new SqlParameter("@varREWARD", H_Ses_TXTReward.Text),
+                new SqlParameter("@varEEG_DATA", H_Ses_CBXEEGData.SelectedIndex)};
+
+                if (result.Rows.Count > 0)
+                {
+                    // Session found, update
+                    sqlCommand = "UPDATE SESSION SET DATE_TESTED = @varDATE_TESTED, INTERVIEW = @varINTERVIEW, REWARD = @varREWARD, EEG_DATA = @varEEG_DATA WHERE VERSION_ID = @varVERSION_ID AND PARTICIPANT_ID = @varPARTICIPANT_ID";
+                    db.executeCommand(sqlCommand, parameters);
+                }
+                else
+                {
+                    // Session not found, create session
+                    sqlCommand = "INSERT INTO SESSION (VERSION_ID, PARTICIPANT_ID, DATE_TESTED, INTERVIEW, REWARD, EEG_DATA) VALUES (@varVERSION_ID, @varPARTICIPANT_ID, @varDATE_TESTED, @varINTERVIEW, @varREWARD, @varEEG_DATA); SELECT SCOPE_IDENTITY()";
+                    H_Ses_CurrentSessionID = db.executeScalar(sqlCommand, parameters);
+                    Console.WriteLine("Updated Session: " + H_Ses_CurrentSessionID);
+                }
+
+
+            }catch(SqlException ex)
+            {
+                MessageBox.Show("Data Incorect to save the Session, please ensure all data is typed correctly\n" + ex.Message, "Data ENtry Error");
+                return;
+            }
 
         }
 
+        /// <summary>
+        /// Takes a CSV List of eeg data and adds the data points to each segment of a session
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void H_Ses_BTNLoadEEGData_Click(object sender, EventArgs e)
+        {
+            // Get clipboard data
+            string data = Clipboard.GetText();
+            Console.WriteLine("Clipboard Text:\n" + data);
+            // Parse columns
+            string[] lines = data.Split(new char[] { '\n' });
+            if (lines.Length <= 0)
+            {
+                MessageBox.Show("Clipboard data not found, please copy EEG output data");
+                return;
+            }
+
+            try
+            {
+                foreach (string line in lines)
+                {
+                    // Dont parse end of line
+                    if (line == "")
+                        continue;
+
+                    // SPlit each row into col values
+                    string[] items = line.Split('\t');
+
+                    // PRINT each col value
+                    foreach (string i in items)
+                    {
+                        Console.WriteLine("\"" + i + "\"");
+                    }
+
+                    // Ensure that only 5 values are present
+                    if (items.Length != 5)
+                    {
+                        MessageBox.Show("Clipboard data not formatted correctly, please ensure the table is copied correctly");
+                        return;
+                    }
+
+                    // Trim int values 
+                    for (int i = 1; i < 5; i++)
+                    {
+                        Console.Write("\tTrimming " + items[i]);
+                        // Trim off 'uV' from values
+                        items[i] = items[i].Split(' ')[0];
+                        Console.WriteLine(" --> " + items[i]);
+                    }
+
+                    string segmentName = items[0];
+                    int segmentID = 0;
+
+                    // This loop ensures i have the SEGMENT_ID for the current EEG_AMPLITUDE
+                    bool recheck = false;
+
+                    do
+                    {
+                        // Check to see if this segment exists already
+                        string query = "SELECT SEGMENT_ID, NAME FROM SEGMENT WHERE NAME = @varNAME AND VERSION_ID = @varVERSION_ID";
+                        SqlParameter[] parameters = new SqlParameter[] {
+                    new SqlParameter("@varNAME", segmentName),
+                    new SqlParameter("@varVERSION_ID", H_Ses_CurrentStudyID)};
+
+                        DataTable result = db.compileQuery(query, parameters);
+
+                        // If the segment does not exist, prompt user to add the segments to the version first
+                        if (result.Rows.Count <= 0)
+                        {
+                            // Prompt user to add all segments
+                            DialogResult dialogResult = MessageBox.Show("Segment \"" + segmentName + "\" was not found, \n Would you like to add all segments from the clipboard to the current study version?", "Segment not found", MessageBoxButtons.YesNo);
+
+                            if (dialogResult == DialogResult.Yes)
+                            {
+                                // Add segments
+                                Console.WriteLine("Generating segments from clipboard");
+                                H_S_AS_GenerateSegments(H_Ses_CurrentStudyID, false);
+                                recheck = true;
+                            }
+                            else
+                            {
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            // Gets the ID of the 
+                            segmentID = (int)result.Rows[0].ItemArray[0];
+                            recheck = false;
+                        }
+                    } while (recheck);
+
+                    // Check to see if EEG Data exists for this segment/session
+                    string EEGDataQuery = "SELECT * FROM EEG_AMPLITUDE WHERE SESSION_ID = @varSESSION_ID AND SEGMENT_ID = @varSEGMENT_ID";
+                    SqlParameter[] eegParameters = new SqlParameter[] {
+                    new SqlParameter("@varSESSION_ID", H_Ses_CurrentSessionID),
+                    new SqlParameter("@varSEGMENT_ID", segmentID)};
+
+                    DataTable eegResult = db.compileQuery(EEGDataQuery, eegParameters);
+
+                    string eegUpdateOrInsertCommand;
+                    if (eegResult.Rows.Count > 0)
+                    {
+                        // EEG Data exists, just update
+                        eegUpdateOrInsertCommand = "UPDATE EEG_AMPLITUDE SET DELTA = @varDELTA, THETA = @varTHETA, ALPHA = @varALPHA, BETA = @varBETA WHERE SESSION_ID = @varSESSION_ID AND SEGMENT_ID = @varSEGMENT_ID";
+                    }
+                    else
+                    {
+                        // Create EEG Data
+                        eegUpdateOrInsertCommand = "INSERT INTO EEG_AMPLITUDE (SESSION_ID, SEGMENT_ID, DELTA, THETA, ALPHA, BETA) VALUES (@varSESSION_ID, @varSEGMENT_ID, @varDELTA, @varTHETA, @varALPHA, @varBETA)";
+                    }
+                    // Free to make segment now
+                    SqlParameter[] eegUpdateParameters = new SqlParameter[] {
+                    new SqlParameter("@varSESSION_ID", H_Ses_CurrentSessionID),
+                    new SqlParameter("@varSEGMENT_ID", segmentID),
+                    new SqlParameter("@varDELTA", items[1]),
+                    new SqlParameter("@varTHETA", items[2]),
+                    new SqlParameter("@varALPHA", items[3]),
+                    new SqlParameter("@varBETA", items[4])};
+
+                    db.executeCommand(eegUpdateOrInsertCommand, eegUpdateParameters);
+
+                }
+            }catch(SqlException ex)
+            {
+                Console.WriteLine("Crash when copying EEG data from clipboard\n" + ex.Message + "\n" + ex.StackTrace);
+            }
+            H_Ses_PopulateEEGData(H_Ses_CurrentSessionID);
+        }
 
         #endregion
 
@@ -909,14 +1301,14 @@ namespace BrainologyStudyDatabase
             for (int i = 0; i < pkTable.Rows.Count; i++)
             {
                 if (i != 0)
-                    sql += " OR ";
+                    sql += " AND ";
                 sql += pkTable.Rows[i][1] + " = @row" + pkTable.Rows[i][1];
                 // Create sqlParams
                 string colName = (string)pkTable.Rows[i][1];
                 int colIndex = 0;
                 for(int c = 0; c < DI_DGInput.Columns.Count; c++)
                 {
-                    if (DI_DGInput.Columns[c].Name == colName)
+                    if (DI_DGInput.Columns[c].DataPropertyName == colName)
                     {
                         colIndex = c;
                         break;
@@ -941,6 +1333,8 @@ namespace BrainologyStudyDatabase
 
             selectNewTable(currentTable);
 
+            // Bad fix but oh well
+            if(currentTable != DatabaseEnums.TABLES.EEG_AMPLITUDE)
             refactorTable(currentTable, pkTable.Rows[0][1].ToString());
         }
 
@@ -1199,6 +1593,10 @@ namespace BrainologyStudyDatabase
             }
             Console.Write("\n");
         }
+
+
+
+
 
 
 
